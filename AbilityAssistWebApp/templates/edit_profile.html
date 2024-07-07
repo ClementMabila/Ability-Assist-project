@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #e7f1f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            font-size: 1.2rem;
+        }
+
+        header {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1000;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .navbar-brand,
+        .nav-link {
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+        }
+
+        .navbar-dark .navbar-toggler-icon {
+            background-color: #fff;
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: #fff;
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #ffc107;
+        }
+
+        .dropdown-menu {
+            font-family: 'Poppins', sans-serif;
+            background-color: #343a40;
+        }
+
+        .dropdown-item {
+            color: #fff;
+        }
+
+        .dropdown-item:hover {
+            background-color: #495057;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: #343a40;
+        }
+
+        label {
+            font-family: 'Poppins', sans-serif;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border-radius: 25px;
+            border: 2px solid #ced4da;
+            padding: 10px 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #ffc107;
+            box-shadow: 0 0 5px #ffc107;
+        }
+
+        .btn-primary {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #e0a800;
+            border-color: #e0a800;
+        }
+
+        .btn-deactivate {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-deactivate:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+
+        .user-icon {
+            margin-right: 5px;
+        }
+
+        .edit-profile-form {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+            margin-bottom: 100px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            width: 60%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+            /* Button styles */
+        .modal-buttons {
+            text-align: center;
+        }
+
+        .modal-buttons button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #confirmBtn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        #cancelBtn {
+            background-color: #ffffff;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'abilityassist.png' %}" alt="AbilityAssist Logo"
+                        height="45" width="50">AbilityAssist</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Help</a>
+                    </li>
+                </ul>
+                <div class="nav-item dropdown ml-auto">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% if user.is_authenticated %}
+                        {{ user.get_full_name }}
+                        {% else %}
+                        Login to Volunteer Account
+                        {% endif %}
+                        <i class="fas fa-user"></i>
+                        <span class="username"></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% if user.is_authenticated %}
+                        <a class="dropdown-item" href="{% url 'edit_profile' %}">Edit/Delete Volunteer
+                            Profile</a>
+                        <a class="dropdown-item" href="{% url 'trips' %}">Your Trips</a>
+                        <a class="dropdown-item" href="{% url 'recent_trip' %}">Get Recent Trip Details</a>
+                        <a class="dropdown-item" href="{% url 'user_stats' %}">User Trips Leaderboard</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
+                        {% else %}
+                        <a class="dropdown-item" href="{% url 'login' %}">Log In</a>
+                        <a class="dropdown-item" href="{% url 'register' %}">Register</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1>Edit Profile</h1>
+            <form method="post" class="edit-profile-form" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_username">New Mobile Number</label>
+                    <input type="text" class="form-control" id="id_username" name="username" value="{{ form.instance.username }}">
+                    {% if form.username.errors %}
+                    <div class="error-message alert alert-danger mt-3"
+                        role="alert">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_email">New Email</label>
+                    <input type="email" class="form-control" id="id_email" name="email" value="{{ form.instance.email }}">
+                    {% if form.email.errors %}
+                    <div class="error-message alert alert-danger mt-3"
+                        role="alert">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                   <label for="id_last_name">New Last Name</label>
+                    <input type="text" class="form-control" id="id_last_name" name="last_name" value="{{ form.instance.last_name }}">
+                    {% if form.last_name.errors %}
+                        <div class="error-message alert alert-danger mt-3"
+                        role="alert">{{ form.last_name.errors }}</div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="button" class="btn btn-deactivate" id="deactivateBtn">Deactivate/Delete Your Profile</button>
+
+                <div id="confirmationModal" class="modal">
+                    <div class="modal-content">
+                      <span class="close">&times;</span>
+                      <p>Are you sure you want to deactivate your account?</p>
+                      <div class="modal-buttons">
+                        <button id="confirmBtn">Yes</button>
+                        <button id="cancelBtn">No</button>
+                      </div>
+                    </div>
+                  </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer>
+        <div class="container">
+            <p>&copy; 2024 AbilityAssist</p>
+            <div class="mt-5">
+                <ul class="list-inline">
+                    <li class="list-inline-item">
+                        <a href="https://www.facebook.com/profile.php?id=61561203582596&mibextid=ZbWKwL" target="_blank">
+                            <i class="fab fa-facebook-f footer-social-icon"></i>
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="https://x.com/AbilityassistO?t=x_ihgnVah7sj7qn9nn41cw&s=08" target="_blank">
+                            <i class="fab fa-twitter footer-social-icon"></i>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+<!-- Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    var modal = document.getElementById("confirmationModal");
+
+    // Get the <span> element that closes the modal
+    var closeBtn = document.getElementsByClassName("close")[0];
+
+    // Get the buttons for confirmation and cancellation
+    var confirmBtn = document.getElementById("confirmBtn");
+    var cancelBtn = document.getElementById("cancelBtn");
+
+    // When the user clicks the button, open the modal
+    document.getElementById("deactivateBtn").addEventListener("click", function() {
+      modal.style.display = "block";
+    });
+
+    // When the user clicks on <span> (x), close the modal
+    closeBtn.onclick = function() {
+      modal.style.display = "none";
+    };
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+
+    // When the user clicks the confirm button, proceed with deactivation
+    confirmBtn.onclick = function() {
+      // Send AJAX request to deactivate the user
+      // Update the user interface accordingly
+      var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{% url 'deactivate_user' %}", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // User deactivated successfully, log out
+                    window.location.href = "{% url 'login' %}";
+                } else {
+                    // Error deactivating user
+                    alert("Error deactivating user. Please try again later.");
+                }
+            };
+            xhr.onerror = function() {
+                // Connection error
+                alert("Failed to connect to the server. Please check your internet connection.");
+            };
+            xhr.send();
+    };
+
+    // When the user clicks the cancel button, close the modal
+    cancelBtn.onclick = function() {
+      modal.style.display = "none";
+    };
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Check if the cookie contains the name we're looking for
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    // Extract and decode the cookie value
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+</body>
+</html>

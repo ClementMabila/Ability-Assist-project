@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+{% csrf_token %}
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to AbilityAssist</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #e7f1f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            font-size: 1.2rem;
+        }
+
+        header {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1000;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .navbar-brand,
+        .nav-link {
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+        }
+
+        .navbar-dark .navbar-toggler-icon {
+            background-color: #fff;
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: #fff;
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #ffc107;
+        }
+
+        .dropdown-menu {
+            font-family: 'Poppins', sans-serif;
+            background-color: #343a40;
+        }
+
+        .dropdown-item {
+            color: #fff;
+        }
+
+        .dropdown-item:hover {
+            background-color: #ffc107;
+            color: #fff;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+        }
+
+        p {
+            font-family: 'Poppins', sans-serif;
+            color: #666;
+        }
+
+        .form-control {
+            border-color: #ffc107;
+        }
+
+        .btn-primary {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+
+        .btn-primary:hover {
+            background-color: #e0a800;
+            border-color: #e0a800;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #c82333;
+        }
+
+        .user-icon {
+            margin-right: 5px;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .split-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        #audioIndicator {
+            display: none; /* Hide initially */
+        }
+
+        #map-container {
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .company-info {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            color: #333;
+        }
+
+        footer {
+            background-color: #333;
+            color: #ffc107;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        @media (min-width: 768px) {
+            .split-container {
+                flex-direction: row;
+            }
+
+            #map-container {
+                width: 60%;
+                margin-right: 20px;
+            }
+
+            .form-container {
+                width: 40%;
+            }
+        }
+
+        .chat-button{
+            margin-top: 10px;
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            width: 100%;
+        }
+
+        .emergency-button {
+            margin-top: 10px;
+            background-color: red;
+            border-color: #007bff;
+            color: #fff;
+            width: 100%;
+        }
+
+        .chat-button:hover,
+        .emergency-button:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .button-container {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 250px;
+        }
+
+        /* Additional styling for buttons */
+        .chat-button,
+        .emergency-button {
+            height: 100%; /* Each button takes up 50% of the height */
+            margin-bottom: 10px;
+        }
+
+        .chat-button:hover,
+        .emergency-button:hover {
+            border-radius: 0;
+        }
+
+        .chat-button span,
+        .emergency-button span {
+            display: block;
+        }
+
+        .audio-indicator {
+            display: none; /* Initially hidden */
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+        }
+
+        .audio-indicator.active {
+            display: block; /* Displayed when active */
+        }
+
+
+    </style>
+</head>
+
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'abilityassist.png' %}" alt="AbilityAssist Logo"
+                        height="45" width="50">AbilityAssist</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'index' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'about' %}">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'help' %}">Help</a>
+                        </li>
+                    </ul>
+                    <div class="nav-item dropdown ml-auto">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% if user.is_authenticated %}
+                                {{ user.get_full_name }}
+                            {% else %}
+                                Login to Profile
+                            {% endif %}
+                            <i class="fas fa-user"></i>
+                            <span class="username"></span>
+                        </a>
+                       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if user.is_authenticated %}
+                                <a class="dropdown-item" href="{% url 'edit_profile' %}">Edit/Delete Profile</a>
+                                <a class="dropdown-item" href="{% url 'trips' %}">Your Trips</a>
+                                <a class="dropdown-item" href="{% url 'recent_trip' %}">Get Recent Trip Details</a>
+                                <a class="dropdown-item" href="{% url 'user_stats' %}">User Trips Leaderboard</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
+                            {% else %}
+                                <a class="dropdown-item" href="{% url 'login' %}">Log In</a>
+                                <a class="dropdown-item" href="{% url 'register' %}">Register</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="split-container">
+            <div id="map-container">
+
+            </div>
+            <div class="form-container">
+                <form id="destinationForm">
+                    <div class="form-group">
+                        <label for="destinationInput">Choose Destination:</label>
+                        <select class="form-control" id="destinationInput" name="destination">
+                            <option value="">Select a destination</option>
+                            <option value="5G6CF34W+CM Soshanguve, South Africa">Main Gate</option>
+                            <option value="5G6CF35X+Q3 Soshanguve, South Africa">Small Gate</option>
+                            <option value="5G6CF35W+V5 Soshanguve,  South Africa">Library</option>
+                            <option value="5G6CF36W+8F Soshanguve, South Africa">Building 13</option>
+                            <option value="F35W+Q3 Soshanguve, South Africa">One-Stop Building</option>
+                            <option value="F35V+VX Soshanguve, South Africa">M&W Res admin</option>
+                            <option value="5G6CF35W+Q7 Soshanguve, South Africa">Financial Aid Office</option>
+                            <option value="5G6CF35W+V6 Soshanguve, South Africa">I-Center</option>
+                            <option value="5G6CF35W+F7 Soshanguve, South Africa">Gymnasium</option>
+                            <option value="5G6CF34W+J5 Soshanguve, South Africa">Student town resident admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="button-container">
+                        <button type="submit" id ="calculateRouteButton" class="btn btn-primary">Calculate Route</button>
+                    </div>
+                </form>
+
+                <div id="distanceResult"></div>
+                <div class="button-container">
+                    <button class="chat-button" id="voiceButton">
+                        <span class="fas fa-comment-dots"></span>
+                        Chat
+                    </button>
+                    <button class="emergency-button" onclick="startEmergency()">
+                        <span class="fas fa-exclamation-circle"></span>
+                        Emergency
+                    </button>
+                </div>
+                <div class="modal" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="chatModalLabel">Chat Functionality</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                 Please reload the page to utilize the Chat functionality.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Modal -->
+                <div class="modal" id="emergencyModal" tabindex="-1" role="dialog" aria-labelledby="emergencyModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="emergencyModalLabel">Emergency Information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Please call Mbombela at <a href="tel:+27137453670">(013)745-3670, 143</a> for Campus Protection Services assistance.
+                                <div class="modal-phone-number">
+                                    Or <a href="tel:+27119589085">(011)958-9085</a> for Medical Emergencies and assistance.
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Trip Completion Modal -->
+                <div class="modal" id="tripCompletionModal" tabindex="-1" role="dialog" aria-labelledby="tripCompletionModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="tripCompletionModalLabel">Trip Completed</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        Congratulations! You have reached your destination.
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="newTripButton">Start a New Trip</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="company-info">
+            <h2>Welcome to AbilityAssist</h2>
+            <p>At AbilityAssist, we strive to create a more inclusive world for everyone. Let us know how we can help you
+                or your loved ones today.</p>
+        </div>
+
+        <footer>
+        <div class="container">
+            <p>&copy; 2024 AbilityAssist</p>
+            <div class="mt-5">
+                <ul class="list-inline">
+                    <li class="list-inline-item">
+                        <a href="https://www.facebook.com/profile.php?id=61561203582596&mibextid=ZbWKwL" target="_blank">
+                            <i class="fab fa-facebook-f footer-social-icon"></i>
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="https://x.com/AbilityassistO?t=x_ihgnVah7sj7qn9nn41cw&s=08" target="_blank">
+                            <i class="fab fa-twitter footer-social-icon"></i>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </footer>
+    </div>
+    <!-- Notification Modal -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color: #ffc107;">
+            <h5 class="modal-title" id="notificationModalLabel">Notification</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="notificationModalBody">
+            <!-- Notification message will be injected here -->
+          </div>
+          <div class="modal-footer" style="background-color: #e7f1f7;">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+        var userLocation;
+        var map;
+        var currentTripId = null;
+        var directionsRenderer;
+        var directionsService;
+        let tripInterval;
+        var isCreatingTrip = false;
+        var userFinalDestination = { value: null };
+        var userLocationMarker;
+        var initialZoomLevel = 10;
+        var isCalculatingRoute;
+        var watchId;
+        var tutSouthCampusBounds = {
+            north: -25.5372,
+            south: -25.5444,
+            east: 28.0983,
+            west: 28.0929
+        };
+
+
+        function initMap() {
+            // Initialize the map centered at an example location
+            var tutSouthCampus = { lat: -25.54055, lng: 28.095 };
+            map = new google.maps.Map(document.getElementById("map-container"), {
+                center: tutSouthCampus, // Center the map on TUT main campus
+                zoom: initialZoomLevel,
+                restriction: {
+                    latLngBounds: tutSouthCampusBounds,
+                    strictBounds: false
+                    },
+                gestureHandling: 'greedy' // Allow map panning within bounds
+            });
+
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map,
+                preserveViewport: true // Prevents automatic adjustment of the viewport
+            });
+
+            map.addListener('zoom_changed', function() {
+                initialZoomLevel = map.getZoom();
+            });
+
+             // Get user's current location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        console.log(position);
+
+                        // Retrieve user's current latitude and longitude
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        // Define the user's location as a LatLng object
+                        userLocation = { lat: latitude, lng: longitude };
+                        console.log(userLocation);
+
+                        // Create a marker at the user's location
+                            userLocationMarker = new google.maps.Marker({
+                            position: userLocation,
+                            map: map,
+                            title: 'Your Location'
+                        });
+
+                        // Center the map on the user's location
+                        map.setCenter(userLocation);
+                    },
+                    function(error) {
+                        console.error('Error: The Geolocation service failed:', error);
+                    },
+                    {
+                        enableHighAccuracy: true, // Request high accuracy for location
+                        maximumAge: 5000, // Cache location for 5 seconds
+                        timeout: 10000 // Wait up to 10 seconds for location response
+                    }
+                );
+            } else {
+                console.error('Error: Your browser doesn\'t support geolocation.');
+            }
+
+
+            // Set up markers for predefined locations
+            setMarkers(map);
+
+            // Call calculateRoute when the form is submitted
+            document.getElementById("destinationForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+                const origin = userLocation;
+                const destination = document.getElementById("destinationInput").value;
+
+                // Parse the coordinates (latitude and longitude)
+                const [latitude, longitude] = destination.split(',').map(Number);
+
+                // Perform further processing with the coordinates (e.g., calculate route)
+                console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+
+                // Check if a valid destination is chosen
+                if (destination) {
+                    const geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({ 'address': destination, 'bounds': tutSouthCampusBounds }, function (results, status) {
+                        if (status === 'OK') {
+                            const destinationLatLng = results[0].geometry.location;
+                            calculateRoute(origin, destination);
+                        } else {
+                            console.error('Geocoding failed due to: ' + status);
+                            document.getElementById('distanceResult').innerHTML = `
+                                <p>Failed to find destination. Please try again.</p>
+                            `;
+                        }
+                    });
+                } else {
+                    document.getElementById('distanceResult').innerHTML = `
+                        <p>Please choose a valid destination.</p>
+                    `;
+                }
+            });
+        }
+
+        // Data for the markers consisting of a name, a LatLng and a zIndex for the
+        // order in which these markers should display on top of each other.
+        const beaches = [
+          ["Student town resident admin", -25.54345, 28.09544, 14],
+          ["Main gate", -25.54396, 28.09668, 11],
+          ["Small gate",  -25.54062, 28.09766, 10],
+          ["Library", -25.5403, 28.0954, 9],
+          ["Building 13", -25.53922, 28.0962, 8],
+          ["One stop Post/Under-graduates", -25.54055, 28.09525, 7],
+          ["I-Center", -25.5403, 28.09558, 6],
+          ["Gymnasium", -25.5413, 28.09568, 4],
+          ["Student centre", -25.541454, 28.0951, 3],
+          ["Men & Female Resident admin", -25.54025, 28.09490, 2],
+          ["Financial Aid office", -25.54055, 28.0957, 1],
+        ];
+
+        function setMarkers(map) {
+          const image = {
+            url: "https://maps.google.com/mapfiles/kml/shapes/library_maps.png", // URL to Google's file map icon
+            // This marker is 20 pixels wide by 32 pixels high.
+            size: new google.maps.Size(32, 32),
+            // The origin for this image is (0, 0).
+            origin: new google.maps.Point(0, 0),
+            // The anchor for this image is the center at (16, 16).
+            anchor: new google.maps.Point(16, 16),
+          };
+          // Shapes define the clickable region of the icon. The type defines an HTML
+          // <area> element 'poly' which traces out a polygon as a series of X,Y points.
+          // The final coordinate closes the poly by connecting to the first coordinate.
+          const shape = {
+            coords: [1, 1, 1, 32, 32, 32, 32, 1],
+            type: "poly",
+          };
+
+          for (let i = 0; i < beaches.length; i++) {
+            const beach = beaches[i];
+
+            new google.maps.Marker({
+              position: { lat: beach[1], lng: beach[2] },
+              map,
+              icon: image,
+              shape: shape,
+              title: beach[0],
+              zIndex: beach[3],
+            });
+          }
+        }
+
+        // Initialize speech recognition
+        var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        function askForVoiceAssistance() {
+            const question = "Welcome to AbilityAssist. If you require voice assistance, please say 'a'. Otherwise, say 'b'.";
+            speak(question);
+            // Start listening for the user's response after asking the question
+            setTimeout(() => recognition.start(), 1000); // Wait a bit before starting recognition to give time for the speech to finish
+        }
+
+
+        function speak(text, callback) {
+            if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech synthesis
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.onend = function(event) {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                };
+                window.speechSynthesis.speak(utterance);
+            } else {
+                console.error('Sorry, your browser does not support text-to-speech.');
+            }
+        }
+
+
+        recognition.onresult = function(event) {
+            var speechResult = event.results[0][0].transcript.toLowerCase();
+            console.log('User says:', speechResult);
+
+            if (speechResult.includes("a") || speechResult.includes("yes")) {
+                // User wants voice assistance
+                console.log("Voice assistance activated.");
+                readDestinations();
+            } else if (speechResult.includes("b") || speechResult.includes("no")) {
+                // User doesn't want voice assistance
+                console.log("Voice assistance deactivated.");
+                speak("Okay, good luck.", function() {
+                    // This callback function will be executed after the speech synthesis has finished speaking.
+                    console.log("Finished saying goodbye.");
+                });
+            } else {
+                // User has provided a number for a destination
+                var destinationNumber = parseInt(speechResult, 10);
+                if (!isNaN(destinationNumber)) {
+                    selectDestinationFromNumber(destinationNumber);
+                } else {
+                    // Unrecognized response, ask again
+                    speak("Sorry, I didn't catch that. If you require voice assistance, please say 'a' or 'yes'. Otherwise, say 'b' or 'no'.", function() {
+                        recognition.start();
+                    });
+                }
+            }
+        };
+
+        const destinations = [
+            "Main Gate",
+            "Small Gate",
+            "Library",
+            "Building 13",
+            "One-Stop Building",
+            "M&W Res admin",
+            "Financial Aid Office",
+            "I-Center",
+            "Gymnasium",
+            "Student town resident admin"
+        ];
+
+        function readDestinations() {
+            let destinationText = "Here are the destinations. ";
+            destinations.forEach(function(destination, index) {
+                destinationText += `For ${destination}, say ${index + 1}. `;
+            });
+            destinationText += "Please say your destination number after the tone.";
+
+            speak(destinationText, function() {
+                setTimeout(() => recognition.start(), 1000); // Wait a bit before starting recognition to give time for the speech to finish
+            });
+        }
+
+        recognition.onerror = function (event) {
+            console.error('Speech recognition error', event.error);
+            // Handle errors or restart recognition
+            askForVoiceAssistance();
+            recognition.start();
+
+        };
+
+
+
+        function greetUser() {
+            const greetingText = "I will read out the list of destinations for you.";
+            speak(greetingText);
+            readDestinations();
+        }
+
+
+        function sendDataToBackend(distance, duration) {
+            if (currentTripId || isCreatingTrip) {
+                console.log("Trip is already initialized or being created. Not creating a new trip.");
+                return;
+            }
+            isCreatingTrip = true;
+            const destinationValue = document.getElementById("destinationInput").value;
+            console.log("Destination value is: " + destinationValue);
+            let finalValue = "";
+            let finalName = "";
+            if (destinationValue == "5G6CF34W+CM Soshanguve, South Africa") {
+                finalValue = "5G6CF34W+CM Soshanguve, South Africa";
+                finalName = "Main Gate";
+            } else if (destinationValue == "5G6CF35X+Q3 Soshanguve, South Africa") {
+                finalValue = "5G6CF34W+CM Soshanguve, South Africa";
+                finalName = "Small Gate";
+            } else if (destinationValue == "5G6CF35W+V5 Soshanguve,  South Africa") {
+                finalValue = "5G6CF35W+V5 Soshanguve,  South Africa";
+                finalName = "Library";
+            } else if (destinationValue == "5G6CF36W+8F Soshanguve, South Africa") {
+                finalValue = "5G6CF36W+8F Soshanguve, South Africa";
+                finalName = "Building 13";
+            } else if (destinationValue == "F35W+Q3 Soshanguve, South Africa") {
+                finalValue = "F35W+Q3 Soshanguve, South Africa";
+                finalName = "One Stop Building";
+            } else if (destinationValue == "F35V+VX Soshanguve, South Africa") {
+                finalValue = "F35V+VX Soshanguve, South Africa";
+                finalName = "Male & Female Resident Admin Building";
+            } else if (destinationValue == "5G6CF35W+Q7 Soshanguve, South Africa") {
+                finalValue = "5G6CF35W+Q7 Soshanguve, South Africa";
+                finalName = "Financial Aid Office";
+            } else if (destinationValue == "5G6CF35W+V6 Soshanguve, South Africa") {
+                finalValue = "5G6CF35W+V6 Soshanguve, South Africa";
+                finalName = "Information Center";
+            } else if (destinationValue == "5G6CF35W+F7 Soshanguve, South Africa") {
+                finalValue = "5G6CF35W+F7 Soshanguve, South Africa";
+                finalName = "Gymnasium";
+            } else if (destinationValue == "5G6CF34W+J5 Soshanguve, South Africa") {
+                finalValue = "5G6CF34W+J5 Soshanguve, South Africa";
+                finalName = "Student town resident admin";
+            }
+
+            // Send trip data to backend
+            const tripJSON = {
+                initialPoint: { latitude: userLocation.lat, longitude: userLocation.lng }, // Corrected the spelling of latitude and longitude
+                finalPoint: { finalDestinationValue: finalValue, finalDestinationName: finalName },
+                distance: distance, // Include distance
+                duration: duration // Include duration
+            };
+            console.log("Here is the object to be sent to backend: " + JSON.stringify(tripJSON));
+            const url = 'store_trip/';
+
+            const options = {
+                method: 'POST', // HTTP method
+                headers: {
+                    'Content-Type': 'application/json' // Specify that we are sending JSON data
+                },
+                body: JSON.stringify(tripJSON) // Convert JSON data to string before sending
+            };
+
+            // Make the fetch request
+            fetch(url, options)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // Parse the JSON response from the backend
+                })
+                .then(data => {
+                    console.log('Response from backend:', data); // Handle the response from the backend
+                    currentTripId = data.trip_id; // Make sure this variable is defined earlier in your script
+                    replaceCalculateButton();
+                    setupLocationUpdateInterval();
+                })
+                .catch(error => {
+                    console.error('Error:', error); // Handle any errors that occur during the fetch request
+                })
+                .finally(() => {
+                    isCreatingTrip = false;
+                });
+        }
+
+
+        document.getElementById("destinationForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const destinationInput = document.getElementById("destinationInput");
+            const destination = destinationInput.value;
+            if (destination) {
+                userFinalDestination.value = destination;
+                calculateRoute(userLocation, destination);
+                if (tripInterval) clearInterval(tripInterval);
+                tripInterval = setInterval(() => {
+                    // Periodically update the user's location and UI
+                    navigator.geolocation.getCurrentPosition(position => {
+                        updateCurrentLocation(position.coords.latitude, position.coords.longitude, currentTripId);
+                    });
+                }, 3000); // Update every 3 seconds
+            }
+
+        });
+
+        function updateMapAndRoute(latitude, longitude, destinationValue) {
+            updateUserLocationMarker(latitude, longitude);
+            // Assuming you have the latitude and longitude for the destination
+            const currentPosition = new google.maps.LatLng(latitude, longitude);
+
+            const request = {
+                origin: currentPosition,
+                destination: destinationValue,
+                travelMode: google.maps.TravelMode.WALKING
+            };
+
+            directionsService.route(request, (result, status) => {
+                if (status === 'OK') {
+                    directionsRenderer.setDirections(result);
+                    map.setZoom(initialZoomLevel);
+                    // Update UI with the new distance and duration
+                    const distance = result.routes[0].legs[0].distance.text;
+                    const duration = result.routes[0].legs[0].duration.text;
+                    document.getElementById('distanceResult').textContent = `Distance: ${distance}, Duration: ${duration}`;
+                } else {
+                    console.error('Directions request failed due to ' + status);
+                }
+            });
+        }
+
+        function setupLocationUpdateInterval() {
+            if (tripInterval) clearInterval(tripInterval);
+            if (watchId) navigator.geolocation.clearWatch(watchId);
+            tripInterval = setInterval(() => {
+                navigator.geolocation.getCurrentPosition(position => {
+                    updateCurrentLocation(position.coords.latitude, position.coords.longitude, currentTripId);
+                    updateMapAndRoute(position.coords.latitude, position.coords.longitude, userFinalDestination.value);
+                }, error => console.error('Error getting current position:', error));
+            }, 3000); // Update every 3 seconds
+            console.log("Location update interval set.");
+        }
+
+        function updateCurrentLocation(latitude, longitude, tripId) {
+            if (!tripId) {
+                console.log("Trip is already initialized. Not creating a new trip.");
+                return;
+            }
+            console.log("Updating current location for trip ID:", tripId);
+            const destinationLatLng = new google.maps.LatLng(userFinalDestination.value.split(',').map(Number));
+            const currentLatLng = new google.maps.LatLng(latitude, longitude);
+            const distanceToDestination = google.maps.geometry.spherical.computeDistanceBetween(destinationLatLng, currentLatLng);
+             if (distanceToDestination <= 10) {
+                // Stop updating the location
+                clearInterval(tripInterval);
+                // Update the trip as completed in the backend
+                fetch(`/AbilityAssistWebApp/complete_trip/${tripId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ completed: true }) // Update your Django model to include this field
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Trip marked as completed:', data);
+                })
+                .catch(error => {
+                    console.error('Error completing trip:', error);
+                });
+                // Show the trip completion modal
+                $('#tripCompletionModal').modal('show');
+            }
+
+            fetch(`/AbilityAssistWebApp/update_current_location/${tripId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ latitude, longitude })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Trip location updated: ", data)
+                console.log("User's current location:", "Latitude:", latitude, "Longitude:", longitude);
+                console.log("userFinalDestination value type:", typeof userFinalDestination.value);
+                updateMapAndRoute(latitude, longitude, userFinalDestination.value);
+            })
+            .catch(error => console.error('Error updating trip location:', error));
+        }
+
+        function updateUserLocationMarker(lat, lng) {
+            var newPosition = new google.maps.LatLng(lat, lng);
+            if (userLocationMarker) {
+                // If the marker exists, simply update its position.
+                userLocationMarker.setPosition(newPosition);
+            } else {
+                // If the marker doesn't exist, create it. This should only happen once.
+                userLocationMarker = new google.maps.Marker({
+                    position: newPosition,
+                    map: map,
+                    title: 'Your Location'
+                });
+            }
+        }
+
+
+
+        function calculateRoute(origin, destination) {
+            console.log("calculateRoute called with origin:", origin, "destination:", destination);
+            origin = userLocationMarker.getPosition();
+            if (currentTripId) {
+                // Update the existing trip's destination
+                updateFinalDestination(currentTripId, destination);
+            } else {
+                if (isCalculatingRoute) {
+                    console.log("A route calculation is already in progress.");
+                    return;
+                }
+                isCalculatingRoute = true;
+            }
+            directionsRenderer.setMap(map);
+
+            const request = {
+                origin: origin,
+                destination: destination,
+                travelMode: google.maps.TravelMode.WALKING
+            };
+
+            directionsService.route(request, function (result, status) {
+                if (status === 'OK') {
+                    if (!userLocationMarker) {
+                        userLocationMarker = new google.maps.Marker({
+                            position: origin,
+                            map: map,
+                            title: 'Your Location'
+                        });
+                    }
+                    directionsRenderer.setDirections(result);
+                    // Display distance and duration from the response
+                    const distance = result.routes[0].legs[0].distance.text;
+                    const duration = result.routes[0].legs[0].duration.text;
+                    document.getElementById('distanceResult').innerHTML = `
+                        <p>Distance: ${distance}</p>
+                        <p>Duration: ${duration}</p>
+                    `;
+                    // Calculate a new route and create a trip
+                    sendDataToBackend(distance, duration);
+
+                    // Voice guidance for the route
+                    var text = "The distance to your selected destination is "+distance+" and the time it will take is "+duration;
+                    console.log(text);
+
+                    speak(text, function() {
+                        // After announcing the total distance and duration, watch the user's position and announce steps
+                        const steps = result.routes[0].legs[0].steps;
+                        if (steps.length > 0) {
+                            let firstInstruction = simplifyDirection(steps[0].instructions, steps[0].distance.text);
+                            speak(firstInstruction, function() {
+                                // Begin watching the user's position and announce subsequent steps
+                                setupLocationUpdateInterval();
+                                watchUserPositionAndAnnounceSteps(steps); // Pass remaining steps except the first one
+                            });
+                        }
+                    });
+
+                    // Send data to backend using AJAX
+                    $.ajax({
+                        type: "POST",
+                        url: "/store_trip/", // URL of the backend view function to handle storing trips
+                        data: {
+                            csrfmiddlewaretoken: getCookie('csrftoken'), // Include CSRF token for security
+                            start_point: JSON.stringify(origin),
+                            destination: destination
+                        },
+                        success: function (response) {
+                            console.log(response); // Log response from backend (optional)
+                            // Handle success response if needed (optional)
+                        },
+                        error: function (xhr, errmsg, err) {
+                            console.log(xhr.status + ": " + xhr.responseText); // Log error message (optional)
+                            // Handle error response if needed (optional)
+                        }
+                    });
+
+                } else {
+                    console.error('Directions request failed due to: ' + status);
+                    document.getElementById('distanceResult').innerHTML = `
+                        <p>Failed to calculate route. Please try again.</p>
+                    `;
+                }
+                isCalculatingRoute = false;
+            });
+        }
+
+        function simplifyDirection(instruction, distance) {
+            var div = document.createElement('div');
+            div.innerHTML = instruction;
+            var text = div.textContent || div.innerText || "";
+
+            var direction = text.includes('left') ? 'Turn left' :
+                            text.includes('right') ? 'Turn right' :
+                            'Proceed Straight';
+
+            var detailedInstruction = `In ${distance}, ${direction}.`;
+            console.log('Detailed instruction:', detailedInstruction);
+            return detailedInstruction;
+        }
+
+        function watchUserPositionAndAnnounceSteps(steps) {
+            console.log("Received steps:", steps); // Log the received steps for verification
+            let totalDistanceToDestination = steps.reduce((acc, step) => acc + step.distance.value, 0);
+
+            steps.forEach((step, index) => {
+                const startLat = step.start_location.lat();
+                const startLng = step.start_location.lng();
+                console.log(`Step ${index} start location:`, { lat: startLat, lng: startLng });
+            });
+
+            let currentStepIndex = 0;
+            let isNextStepAnnounced = false;
+            let previousDistanceToDestination = totalDistanceToDestination;
+
+            watchId = navigator.geolocation.watchPosition(
+                function(position) {
+                    console.log("Current GPS position:", position); // Log the current GPS position
+
+                    const userPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    console.log("User position (LatLng object):", userPosition); // Log the user position object
+
+                    const currentStep = steps[currentStepIndex];
+                    console.log("Current step data:", currentStep); // Log the current step data
+
+                    if (!currentStep || !currentStep.end_location) {
+                        console.error("Missing 'end_location' for the current step:", currentStep);
+                        return; // Exit if 'end_location' is missing or undefined
+                    }
+
+                    // Use the functions to get the latitude and longitude values
+                    const stepEndLat = currentStep.end_location.lat();
+                    const stepEndLng = currentStep.end_location.lng();
+                    const stepLocation = new google.maps.LatLng(stepEndLat, stepEndLng);
+                    console.log("Step end location (LatLng object):", stepLocation); // Log the step end location object
+
+                    const distanceToStepEnd = google.maps.geometry.spherical.computeDistanceBetween(userPosition, stepLocation);
+                    console.log(`Distance to the end of the current step: ${distanceToStepEnd} meters`);
+
+                    const distanceToDestination = google.maps.geometry.spherical.computeDistanceBetween(userPosition, steps[steps.length - 1].end_location);
+                    console.log(`Total distance to destination: ${distanceToDestination} meters`);
+
+                    // Check if the user is moving towards the destination
+                    if (distanceToDestination < previousDistanceToDestination) {
+                        // Announce next step based on overall distance to destination
+                        if (!isNextStepAnnounced && currentStepIndex < steps.length - 1) {
+                            const nextStep = steps[currentStepIndex + 1];
+                            const nextInstruction = simplifyDirection(nextStep.instructions, nextStep.distance.text);
+                            console.log("Announcing next step:", nextInstruction); // Log the next step to be announced
+                            speak(nextInstruction);
+                            isNextStepAnnounced = true;
+                        }
+                    } else {
+                        console.log("User is moving away from the destination.");
+                    }
+
+                    previousDistanceToDestination = distanceToDestination;
+
+                    // Announce the instruction when the current step is completed or user is off-route but moving closer to destination
+                    if (distanceToStepEnd < 10 || (currentStepIndex < steps.length - 1 && distanceToDestination < previousDistanceToDestination)) {
+                        currentStepIndex++;
+                        isNextStepAnnounced = false;
+                        console.log(`Moved to next step: ${currentStepIndex}`);
+                    }
+
+                    // Final destination reached
+                    if (distanceToDestination < 10 && currentStepIndex >= steps.length - 1) {
+                        console.log("Final destination reached."); // Log the final destination reached
+                        speak("You have reached your destination.");
+                        navigator.geolocation.clearWatch(watchId);
+                    }
+                },
+                function(error) {
+                    console.error('Error with geolocation watchPosition:', error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 10000
+                }
+            );
+        }
+
+        function simplifyDirection(instruction, distance) {
+            var div = document.createElement('div');
+            div.innerHTML = instruction;
+            var text = div.textContent || div.innerText || "";
+
+            var direction = text.includes('left') ? 'Turn left' :
+                            text.includes('right') ? 'Turn right' :
+                            'Proceed Straight';
+
+            var detailedInstruction = `In ${distance}, ${direction}.`;
+            console.log('Detailed instruction:', detailedInstruction);
+            return detailedInstruction;
+        }
+
+        function watchUserPositionAndAnnounceSteps(steps) {
+            console.log("Received steps:", steps); // Log the received steps for verification
+            let totalDistanceToDestination = steps.reduce((acc, step) => acc + step.distance.value, 0);
+
+            steps.forEach((step, index) => {
+                const startLat = step.start_location.lat();
+                const startLng = step.start_location.lng();
+                console.log(`Step ${index} start location:`, { lat: startLat, lng: startLng });
+            });
+
+            let currentStepIndex = 0;
+            let isNextStepAnnounced = false;
+            let previousDistanceToDestination = totalDistanceToDestination;
+            let announcementCount = 0; // To count the number of announcements
+            let announcementTimestamp = 0;
+            const maxAnnouncementsPerStep = 3;
+            const minTimeBetweenAnnouncements = 20000;
+
+            watchId = navigator.geolocation.watchPosition(
+                function(position) {
+                    console.log("Current GPS position:", position); // Log the current GPS position
+
+                    const userPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    console.log("User position (LatLng object):", userPosition); // Log the user position object
+
+                    const currentStep = steps[currentStepIndex];
+                    console.log("Current step data:", currentStep); // Log the current step data
+
+                    if (!currentStep || !currentStep.end_location) {
+                        console.error("Missing 'end_location' for the current step:", currentStep);
+                        return; // Exit if 'end_location' is missing or undefined
+                    }
+
+                    // Use the functions to get the latitude and longitude values
+                    const stepEndLat = currentStep.end_location.lat();
+                    const stepEndLng = currentStep.end_location.lng();
+                    const stepLocation = new google.maps.LatLng(stepEndLat, stepEndLng);
+                    console.log("Step end location (LatLng object):", stepLocation); // Log the step end location object
+
+                    const distanceToStepEnd = google.maps.geometry.spherical.computeDistanceBetween(userPosition, stepLocation);
+                    console.log(`Distance to the end of the current step: ${distanceToStepEnd} meters`);
+
+                    const distanceToDestination = google.maps.geometry.spherical.computeDistanceBetween(userPosition, steps[steps.length - 1].end_location);
+                    console.log(`Total distance to destination: ${distanceToDestination} meters`);
+
+                    // Check if the user is moving towards the destination
+                    if (distanceToDestination < previousDistanceToDestination) {
+                        if (announcementCount < maxAnnouncementsPerStep &&
+                            (new Date().getTime() - announcementTimestamp > minTimeBetweenAnnouncements || announcementTimestamp === 0)) {
+                            const instruction = simplifyDirection(currentStep.instructions, currentStep.distance.text);
+                            speak(instruction);
+                            announcementCount++;
+                            announcementTimestamp = new Date().getTime();
+                        }
+                    } else {
+                        console.log("User is moving away from the destination.");
+                    }
+
+                    previousDistanceToDestination = distanceToDestination;
+
+                    // Announce the instruction when the current step is completed or user is off-route but moving closer to destination
+                    if (distanceToStepEnd < 10 || (currentStepIndex < steps.length - 1 && distanceToDestination < previousDistanceToDestination)) {
+                        currentStepIndex++;
+                        announcementCount = 0; // Reset announcement count for the new step
+                        announcementTimestamp = 0;
+                        console.log(`Moved to next step: ${currentStepIndex}`);
+                    }
+
+                    // Final destination reached
+                    if (distanceToDestination < 10 && currentStepIndex >= steps.length - 1) {
+                        console.log("Final destination reached."); // Log the final destination reached
+                        speak("You have reached your destination.");
+                        navigator.geolocation.clearWatch(watchId);
+                    }
+                },
+                function(error) {
+                    console.error('Error with geolocation watchPosition:', error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 10000
+                }
+            );
+        }
+
+
+
+        function replaceCalculateButton() {
+            const buttonContainer = document.getElementById('button-container');
+            buttonContainer.innerHTML = `
+                <button onclick="changeFinalDestination()" class="btn btn-warning">Change Final Destination</button>
+                <button onclick="event.preventDefault(); cancelTrip();" class="btn btn-danger">Cancel Trip</button>
+            `;
+        }
+
+        function changeFinalDestination() {
+            // Show the destination selection again
+            document.getElementById('destinationInput').style.display = 'block';
+            // Change the buttons to "Update Route" and "Cancel"
+            const buttonContainer = document.getElementById('button-container');
+            buttonContainer.innerHTML = `
+                <button type="submit" class="btn btn-primary">Update Route</button>
+                <button onclick="event.preventDefault(); cancelTrip();" class="btn btn-danger">Cancel Trip</button>
+            `;
+        }
+
+        function updateFinalDestination(tripId, destination) {
+            console.log("Attempting to update final destination for trip ID:", tripId);
+            const [latitude, longitude] = destination.split(',').map(Number);
+            const requestData = {
+                finalDestinationValue: destination,
+                finalDestinationName: document.querySelector("#destinationInput option:checked").text
+            };
+            console.log("Request data for updating final destination:", requestData);
+
+            fetch(`/AbilityAssistWebApp/update_final_destination/${tripId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => {
+                console.log("Response status for updating final destination:", response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success response for updating final destination:', data);
+                showNotification('Final destination updated successfully');
+                calculateRoute(userLocation, {lat: latitude, lng: longitude});
+            })
+            .catch(error => {
+                console.error('Error in updating final destination:', error);
+            });
+        }
+
+        function cancelTrip() {
+            if (!currentTripId) {
+                console.log("No current trip ID to cancel.");
+                alert('No current trip to cancel.');
+                return;
+            }
+            if (watchId !== null) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+            if (tripInterval) {
+                clearInterval(tripInterval);
+                tripInterval = null;
+            }
+
+            console.log("Attempting to cancel trip with ID:", currentTripId);
+
+            fetch(`/AbilityAssistWebApp/cancel_trip/${currentTripId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ cancelled: true })
+            })
+            .then(response => {
+                console.log("Response status for cancelling trip:", response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success response for cancelling trip:', data);
+                showNotification('Trip cancelled successfully');
+                currentTripId = null; // Reset the currentTripId
+                directionsRenderer.setDirections({ routes: [] }); // Clear the route from the map
+                document.getElementById('button-container').innerHTML = '<button type="submit" class="btn btn-primary">Calculate Route</button>';
+            })
+            .catch(error => {
+                console.error('Error in cancelling trip:', error);
+            });
+        }
+
+        // Add the getCookie function here if not already present
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function showNotification(message) {
+            // Update the modal body text
+            $('#notificationModalBody').text(message);
+
+            // Show the modal
+            $('#notificationModal').modal('show');
+        }
+
+        function showTripCompletionModal() {
+          $('#tripCompletionModal').modal('show'); // Make sure this ID matches your modal's ID
+        }
+
+        function checkDistanceAndCompleteTrip() {
+            const distanceText = document.getElementById('distanceResult').textContent;
+            // The regex pattern needs to match the exact format of the distance text, including spaces if necessary.
+            const distanceMatch = distanceText.match(/Distance: ([\d.]+) (km|m)/);
+            if (distanceMatch) {
+                let distanceValue = parseFloat(distanceMatch[1]);
+                const distanceUnit = distanceMatch[2];
+                // Convert kilometers to meters if necessary
+                if (distanceUnit === 'km') {
+                    distanceValue *= 1000;
+                }
+
+                if (distanceValue <= 10) {
+                    fetch(`/AbilityAssistWebApp/complete_trip/${currentTripId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ completed: true })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Trip marked as completed:', data.message);
+                            if (watchId !== null) {
+                                navigator.geolocation.clearWatch(watchId);
+                                watchId = null;
+                            }
+                            if (tripInterval) {
+                                clearInterval(tripInterval);
+                                tripInterval = null;
+                            }
+                            $('#tripCompletionModal').modal('show');
+                            speak("You have reached your destination.");
+
+                        } else {
+                            console.error('Error completing trip:', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error completing trip:', error);
+                    });
+                    // If the distance is less than or equal to 10 meters, consider the trip completed.
+                    showTripCompletionModal();
+                }
+            } else {
+                console.error('Unable to find distance in the distanceResult element.');
+            }
+        }
+
+        // Use a MutationObserver to listen for changes to the distanceResult element
+        const distanceObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+              checkDistanceAndCompleteTrip();
+            }
+          });
+        });
+
+        // Start observing the 'distanceResult' element for configured mutations
+        distanceObserver.observe(document.getElementById('distanceResult'), {
+          childList: true
+        });
+
+        // Event listener for the chat button
+        document.getElementById("voiceButton").addEventListener("click", function() {
+            $('#chatModal').modal('show');
+        });
+
+        // Event listener for the emergency button
+        document.querySelector(".emergency-button").addEventListener("click", function() {
+            $('#emergencyModal').modal('show');
+        });
+
+        document.getElementById("newTripButton").addEventListener("click", function() {
+            // Reset map to initial state
+            if (userLocationMarker) {
+                map.setCenter(userLocationMarker.getPosition());
+                map.setZoom(15);
+            }
+            directionsRenderer.setDirections({ routes: [] }); // Clear the route
+            $('#tripCompletionModal').modal('hide');
+            document.getElementById("destinationInput").selectedIndex = 0; // Reset dropdown
+            document.getElementById('distanceResult').innerHTML = ''; // Clear distance result
+            currentTripId = null; // Reset current trip ID
+        });
+
+        function selectDestinationFromNumber(destinationNumber) {
+            const index = parseInt(destinationNumber, 10) - 1; // Convert spoken number to index
+            if (isNaN(index) || index < 0 || index >= destinations.length) {
+                speak("Sorry, I didn't understand that. Please say the number of your destination again.", function () {
+                    recognition.start();
+                });
+                return;
+            }
+
+            const destinationSelect = document.getElementById('destinationInput');
+            destinationSelect.selectedIndex = index + 1; // Assuming the first option is "Select a destination"
+            const selectedDestinationName = destinationSelect.options[destinationSelect.selectedIndex].text;
+            speak(`You have selected ${selectedDestinationName}. Calculating route.`, function () {
+                document.getElementById('calculateRouteButton').click();
+            });
+        };
+
+        window.onload = function () {
+            // Ask the user if they require voice assistance
+            initMap();
+            askForVoiceAssistance();
+
+        };
+
+        function askForVoiceAssistance() {
+            const question = "Welcome to AbilityAssist. If you require voice assistance, please say 'a'. Otherwise, say 'b'.";
+            speak(question);
+            // Start listening for the user's response after asking the question
+            setTimeout(() => recognition.start(), 1000); // Wait a bit before starting recognition to give time for the speech to finish
+        }
+
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSsRDen4V8Q8SdtG1Mz6UirWhM_mLHCfA&callback=initMap&libraries=places,geometry">
+    </script>
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

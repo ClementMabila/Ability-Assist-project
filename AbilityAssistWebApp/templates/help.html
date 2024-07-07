@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About AbilityAssist</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #e7f1f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            font-size: 1.2rem;
+        }
+
+        header {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1000;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .navbar-brand,
+        .nav-link {
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+        }
+
+        .navbar-dark .navbar-toggler-icon {
+            background-color: #fff;
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: #fff;
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #ffc107;
+        }
+
+        .dropdown-menu {
+            font-family: 'Poppins', sans-serif;
+            background-color: #343a40;
+        }
+
+        .dropdown-item {
+            color: #fff;
+        }
+
+        .dropdown-item:hover {
+             background-color: #ffc107;
+            color: #fff;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: #343a40;
+        }
+
+        p {
+            font-family: 'Poppins', sans-serif;
+            color: #666;
+
+        }
+
+        .about-content {
+            margin-top: 50px;
+            padding: 0 15px; /* Added padding for better mobile display */
+        }
+
+        .feature {
+            margin-top: 30px;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .feature h2 {
+            color: #ffc107;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .feature p {
+            color: #666;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap; /* Added flex-wrap to handle small screens */
+            justify-content: space-between;
+            margin-top: 30px;
+            padding: 0 15px; /* Added padding for better mobile display */
+        }
+
+        /* Added style for each feature */
+        .feature.left {
+            text-align: center;
+            margin-bottom: 20px; /* Added bottom margin for spacing */
+        }
+
+        .feature.center {
+            text-align: center;
+            margin-bottom: 20px; /* Added bottom margin for spacing */
+        }
+
+        .feature.right {
+            text-align: center;
+            margin-bottom: 20px; /* Added bottom margin for spacing */
+        }
+
+        /* Adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .about-content {
+                margin-top: 20px;
+            }
+
+            .feature {
+                padding: 15px;
+                margin-bottom: 20px; /* Added bottom margin for spacing */
+            }
+
+            .navbar-brand,
+            .nav-link {
+                font-size: 18px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'abilityassist.png' %}" alt="AbilityAssist Logo" height="45" width="50">AbilityAssist</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'help' %}">Help</a>
+                    </li>
+                </ul>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% if user.is_authenticated %}
+                        <i class="fas fa-user user-icon"></i>{{ user.get_full_name }}
+                        {% else %}
+                        Login to your Account
+                        {% endif %}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% if user.is_authenticated %}
+                        <a class="dropdown-item" href="{% url 'edit_profile' %}">Edit/Delete Profile</a>
+                        <a class="dropdown-item" href="{% url 'trips' %}">Your Trips</a>
+                        <a class="dropdown-item" href="{% url 'recent_trip' %}">Get Recent Trip Details</a>
+                        <a class="dropdown-item" href="{% url 'user_stats' %}">User Trips Leaderboard</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
+                        {% else %}
+                        <a class="dropdown-item" href="{% url 'login' %}">Login</a>
+                        <a class="dropdown-item" href="{% url 'register' %}">Register</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="about-content">
+                <h1 class="about-heading">Help & Support</h1>
+                <p>If you need assistance or have any questions regarding our services, please don't hesitate to <a href="{% url 'contact' %}">contact</a> us using the form below:</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Policy -->
+<div class="container additional-features">
+    <div class="row justify-content-center">
+       <div class="col-md-8">
+            <div class="features">
+                <div class="feature">
+                    <h2>Privacy Policy</h2>
+                    <p>
+                        <b>Introduction</b><br/>
+                        Welcome to AbilityAssist's Privacy Policy. AbilityAssist respects your privacy and is committed to protecting your personal data. This Privacy Policy will inform you about how we collect, use, disclose, transfer, and store your personal information. By using our services, you consent to the collection and use of your personal data as described in this Privacy Policy.<br/>
+                        <br/>
+                        <b>Information We Collect</b><br/>
+                        We collect various types of information from and about users of our services, including:<br/>
+                        <br/>
+                        Personal information such as name, email address, and contact details.<br/>
+                        Usage data such as IP address, browser type, and operating system.<br/>
+                        Location data if you enable location-based features.<br/>
+                        Communication data including messages, feedback, and inquiries.<br/>
+                        How We Use Your Information<br/>
+                        <b>We use your personal information for the following purposes:</b><br/>
+                        To provide and maintain our services.<br/>
+                        To personalize your experience and improve our services.<br/>
+                        To communicate with you, respond to inquiries, and provide customer support.<br/>
+                        To analyze usage trends and improve the quality of our services.<br/>
+                        To comply with legal obligations and enforce our terms and conditions.<br/>
+                        Information Sharing and Disclosure<br/>
+                        <br/>
+                        <b>We may share your personal information with:</b><br/>
+
+                        Service providers and business partners who assist us in delivering our services.<br/>
+                        Law enforcement agencies, government authorities, or other third parties when required by law or to protect our rights.<br/>
+                        Third parties in connection with a merger, acquisition, or sale of assets.<br/>
+                        <br/>
+                        <b>Data Security</b><br/>
+                        We implement appropriate technical and organizational measures to protect your personal data from unauthorized access, disclosure, alteration, or destruction. However, no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security.<br/>
+                        <br/>
+                        <b>Your Rights</b><br/>
+                        You have the following rights regarding your personal data:<br/>
+                        <br/>
+                        The right to access, update, or delete your personal information.<br/>
+                        The right to restrict or object to the processing of your personal data.<br/>
+                        The right to data portability, allowing you to obtain and reuse your personal data.<br/>
+                        The right to withdraw consent at any time, where applicable.<br/>
+                        <br/>
+                        <b>Changes to This Privacy Policy</b><br/>
+                        We reserve the right to update or modify this Privacy Policy at any time. Any changes will be effective immediately upon posting the updated Privacy Policy on our website. We encourage you to review this Privacy Policy periodically for any updates.<br/>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Terms and Conditions -->
+<div class="container additional-features">
+    <div class="row justify-content-center">
+       <div class="col-md-8">
+            <div class="features">
+                <div class="feature">
+                    <h2>Terms and Conditions</h2>
+                    <p>
+                        <b>Introduction</b><br/>
+                        Welcome to AbilityAssist's Terms and Conditions. These Terms and Conditions govern your use of our services. By accessing or using our services, you agree to be bound by these Terms and Conditions.<br/>
+                        <br/>
+                        <b>Use of Our Services</b><br/>
+                        You may use our services only for lawful purposes and in accordance with these Terms and Conditions. You agree not to:<br/>
+                        Violate any applicable laws, regulations, or third-party rights.<br/>
+                        Use our services in any manner that could interfere with, disrupt, or impair the functionality or security of our services.<br/>
+                        Intellectual Property<br/>
+                        All content, trademarks, logos, and intellectual property displayed on our website are the property of AbilityAssist or its licensors. You may not use, modify, reproduce, or distribute any of the content without our prior written consent.<br/>
+                        <br/>
+                        <b>Limitation of Liability</b><br/>
+                        To the fullest extent permitted by law, AbilityAssist shall not be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in any way connected with your use of our services, whether based on warranty, contract, tort, or any other legal theory.<br/>
+                        <br/>
+                        <b>Indemnification</b><br/>
+                        You agree to indemnify, defend, and hold harmless AbilityAssist and its affiliates, directors, officers, employees, and agents from and against any and all claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or related to your use of our services or violation of these Terms and Conditions.<br/>
+
+                        <b>Governing Law and Jurisdiction</b><br/>
+                        These Terms and Conditions shall be governed by and construed in accordance with the laws of [South Africa], without regard to its conflict of law provisions. Any dispute arising out of or related to these Terms and Conditions shall be exclusively resolved by the courts of [South Africa].<br/>
+                        <br/>
+                        <b>Contact Us</b><br/>
+                        If you have any questions or concerns about these Terms and Conditions or our Privacy Policy, please contact us at <i>[Abilityassistcompany@gmail.com]</i>.<br/>
+
+                        This Privacy Policy and Terms and Conditions were last updated on [04/05/2024].
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+        <div class="container">
+            <p>&copy; 2024 AbilityAssist</p>
+            <div class="mt-5">
+                <ul class="list-inline">
+                    <li class="list-inline-item">
+                        <a href="https://www.facebook.com/profile.php?id=61561203582596&mibextid=ZbWKwL" target="_blank">
+                            <i class="fab fa-facebook-f footer-social-icon"></i>
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="https://x.com/AbilityassistO?t=x_ihgnVah7sj7qn9nn41cw&s=08" target="_blank">
+                            <i class="fab fa-twitter footer-social-icon"></i>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+<!-- Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
